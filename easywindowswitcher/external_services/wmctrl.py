@@ -123,6 +123,11 @@ class WMCtrl:
         index = workspace_grid.get_workspace_index(current_workspace)
         print(index)
 
+    def test2(self):
+        windows_config = get_command_output(["wmctrl", "-l", "-G", "-x"])
+
+        print(self._extract_windows(windows_config))
+
     def _extract_system_config(self, system_config) -> Tuple[WorkspaceGrid, Workspace]:
         # Example system_config: "0  * DG: 17280x3240  VP: 5760,0  WA: 0,24 5760x1056  N/A"
         first_splits = system_config.split("DG:")[1].split("VP:")
@@ -131,3 +136,25 @@ class WMCtrl:
         current_workspace = Workspace(raw_dimensions=first_splits[1].split("WA:")[0].strip())
 
         return (workspace_grid, current_workspace)
+
+    def _extract_windows(self, windows_config):
+        # Can find the monitors in the current workspace by looking at the x and y offsets.
+        # If x-offset isn't negative and y-offset is 24 (??), then the monitor is in the current workspace.
+
+        # I believe the 24 y-offset is just due to things like window decorations and the global menu bar.
+        # Can just look for the smallest y-offset value and use that as the baseline.
+
+        # Additionally, looking at the x-offset tells us which monitor the window is on:
+        # 0 = leftmost monitor, 1920 = center monitor, 3840 = rightmost monitor
+
+        # Example: "0x05000006  0 1920 24   1920 1056 gnome-terminal-server.Gnome-terminal  devin-Desktop Terminal"
+        # Column 1 is window ID (0x05000006)
+        # Column 2 is the 'desktop index' (always 0 for our uses in Unity; can just ignore)
+        # Column 3 is the x-offset (1920)
+        # Column 4 is the y-offset (24)
+        # Column 5 is the window height (1920)
+        # Column 6 is the window width (1056)
+        # Column 7 is the WM_CLASS property from the '-x' option (gnome-terminal-server.Gnome-terminal)
+        # Everything after column 7 ('column' 8) is the title of the window
+
+        return windows_config.split("\n")

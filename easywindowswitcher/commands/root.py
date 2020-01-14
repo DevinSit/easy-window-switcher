@@ -18,4 +18,4 @@ def root():
 @root.command()
 @log_command_args
 def test() -> None:
-    wmctrl_service.test()
+    wmctrl_service.test2()
