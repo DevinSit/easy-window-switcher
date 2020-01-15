@@ -20,7 +20,7 @@ class Window:
             self.title = title
 
     def __repr__(self):
-        return "\n\nID: {}\nX Offset: {}\nY Offset: {}\nDimensions: {}x{}\nClass: {}\nTitle: {}".format(
+        return "ID: {}\nX Offset: {}\nY Offset: {}\nDimensions: {}x{}\nClass: {}\nTitle: {}".format(
             self.id, self.x_offset, self.y_offset, self.width, self.height, self.window_class, self.title
         )
 
@@ -41,9 +41,9 @@ class Window:
         split_config = list(filter(None, raw_config.split(" ")))
 
         self.id = split_config[0]
-        self.x_offset = split_config[2]
-        self.y_offset = split_config[3]
-        self.width = split_config[4]
-        self.height = split_config[5]
+        self.x_offset = int(split_config[2])
+        self.y_offset = int(split_config[3])
+        self.width = int(split_config[4])
+        self.height = int(split_config[5])
         self.window_class = split_config[6]
         self.title = " ".join(split_config[8:])

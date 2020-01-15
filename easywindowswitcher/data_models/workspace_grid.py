@@ -44,18 +44,20 @@ class WorkspaceGrid:
 
     def get_workspace_index(self, workspace: Workspace) -> int:
         # Workspaces, for our purposes, are indexed in order from left to right, top to bottom.
-        # i.e. in a 3x3 grid, the top-leftmost workspace is 0, then the top-center workspace is 1, etc.
+        # i.e. in a 3x3 grid, the top-leftmost workspace is 0, then the top-center workspace is 1, etc
 
-        # TODO: Remove
-        # 0,      0       0
-        # 5760    0       1
-        # 11520   0       2
-        # 0       1080    3
-        # 5760    1080    4
-        # 11520   1080    5
-        # 0       2160    6
-        # 5760    2160    7
-        # 11520   2160    8
+        # Example:
+        #
+        # X         Y       Index
+        # 0,        0       0
+        # 5760      0       1
+        # 11520     0       2
+        # 0         1080    3
+        # 5760      1080    4
+        # 11520     1080    5
+        # 0         2160    6
+        # 5760      2160    7
+        # 11520     2160    8
 
         horizontal_index = int(workspace.width / self.monitor_width / self.monitor_horizontal_count)
         vertical_index = int(workspace.height / self.monitor_height / self.monitor_vertical_count)
