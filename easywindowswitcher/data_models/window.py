@@ -8,7 +8,7 @@ class Window:
     def __init__(
         self,
         raw_config: str = "",
-        id: str = "",
+        id: int = 0,
         x_offset: int = 0,
         y_offset: int = 0,
         height: int = 0,
@@ -17,7 +17,7 @@ class Window:
         title: str = ""
     ) -> None:
         """
-        :param id: A string representation of the (hex) ID for the window.
+        :param id: A string decimal representation of the window's ID (normally in hex).
 
         :param x_offset and y_offset:
 
@@ -70,7 +70,7 @@ class Window:
         # Need to remove any empty strings that are left after splitting
         split_config = list(filter(None, raw_config.split(" ")))
 
-        self.id = split_config[0]
+        self.id = int(split_config[0], 16)
         self.x_offset = int(split_config[2])
         self.y_offset = int(split_config[3])
         self.width = int(split_config[4])

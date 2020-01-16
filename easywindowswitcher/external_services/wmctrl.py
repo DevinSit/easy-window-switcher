@@ -24,8 +24,12 @@ class WMCtrl:
         windows_config = get_command_output(["wmctrl", "-l", "-G", "-x"])
         return self._parse_windows_config(windows_config)
 
-    def focus_window_by_id(self, window_id: str) -> None:
-        call_command(["wmctrl", "-i", "-a", window_id])
+    def get_current_focused_window_id(self) -> int:
+        # Note: Unlike `wmctrl`, `xdotool` returns window IDs in decimal, instead of in hex.
+        return int(get_command_output(["xdotool", "getwindowfocus"]))
+
+    def focus_window_by_id(self, window_id: int) -> None:
+        call_command(["wmctrl", "-i", "-a", str(window_id)])
 
     def _parse_system_config(self, system_config) -> Tuple[WorkspaceGrid, Workspace]:
         # Example system_config: "0  * DG: 17280x3240  VP: 5760,0  WA: 0,24 5760x1056  N/A"

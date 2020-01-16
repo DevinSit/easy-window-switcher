@@ -28,3 +28,10 @@ def monitor(index: int) -> None:
     The index is 0 based and increases from left-to-right.
     """
     window_focuser_service.focus_by_monitor_index(index)
+
+
+@root.command()
+@click.argument("direction_value", metavar="DIRECTION")
+@log_command_args
+def direction(direction_value: str) -> None:
+    window_focuser_service.focus_by_direction(direction_value)
