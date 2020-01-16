@@ -41,7 +41,7 @@ class WindowFocuser:
             window_to_focus = self._get_closest_window(direction)
             self.wmctrl.focus_window_by_id(window_to_focus)
         else:
-            logger.info("Invalid direction: {}".format(direction))
+            logger.info("Invalid direction: {}. Valid directions are: [{}]".format(direction, ", ".join(DIRECTIONS)))
 
     def _get_current_workspace_windows(self) -> List[Window]:
         def in_workspace(window: Window) -> bool:

@@ -34,4 +34,9 @@ def monitor(index: int) -> None:
 @click.argument("direction_value", metavar="DIRECTION")
 @log_command_args
 def direction(direction_value: str) -> None:
+    """
+    Focuses onto the closest window in the given direction. Wraps around until a window is found.
+
+    Valid directions are [left, right].
+    """
     window_focuser_service.focus_by_direction(direction_value)
