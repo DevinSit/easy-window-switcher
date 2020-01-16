@@ -18,6 +18,12 @@ def root():
 
 
 @root.command()
+@click.argument("index", type=int)
 @log_command_args
-def test() -> None:
-    print(window_focuser_service._get_current_workspace_windows())
+def monitor(index: int) -> None:
+    """
+    Focuses onto the window on the monitor with given index.
+
+    The index is 0 based and increases from left-to-right.
+    """
+    window_focuser_service.focus_by_monitor_index(index)

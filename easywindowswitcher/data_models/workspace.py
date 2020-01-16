@@ -4,7 +4,7 @@ class Workspace:
             self._process_raw_dimensions(raw_dimensions)
         else:
             # Note that Workspace dimensions represent the top-leftmost pixel of a workspace.
-            # e.g. 0,0 is the first workspace, 5760,0 is the second workspace for 3 1920x1080 monitors, etc
+            # e.g. 0,0 is the first workspace, 5760,0 is the second workspace for 3 1920x1080 monitors, etc.
             self.width = width
             self.height = height
 
