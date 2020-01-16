@@ -1,26 +1,96 @@
-# Easy Window Switcher
+# Welcome to Easy Window Switcher!
 
-Idea: Create a script to enable focusing on a window on a specific monitor. This way I could create shortcut keys to invoke it for each of my three monitors. I want this because alt-tab is kinda annoying when multiple of the same windows are in the same workspace.
+`easywindowswitcher` is a small (Python) script for enabling X window users to more easily change focus between their windows that are spread across multiple monitors.
 
-I'm thinking `ctrl+alt+1/2/3` as the shortcut.
+**Upgrade your alt-tab!**
 
-# Implementation
+Note: `easywindowswitcher` has only been tested in Ubuntu 16.04 under Unity. Your mileage may vary.
 
-- `wmctrl` seems to be the tool for this
-- Instead of working off the actual workspaces by number, it represents them using a single large pane of 'desktop' space (i.e. something like 17280x3240, because 17280=1920\*3\*3 [3 monitors of width, 3 workspaces wide] and 3240 = 1080\*1\*3 [1 monitor of height, 3 workspaces heigh])
-- As such, something like `wmctrl -o` works by specifying coordinates in this pane (see https://askubuntu.com/questions/41093/is-there-a-command-to-go-a-specific-workspace for more in depth explanation)
-- Can use `wmctrl -d` to get the coordinates for the current pane after the `VP:` section (VP = ViewPort)
-- Can then use `wmctrl -lG` to get the complete list of all windows with their coordinates
-- Can then use the current coordinates to filter the list of windows to only those in the current viewport/workspace
-- Can then focus based on which window is on which monitor
+## Why did I build Easy Window Switcher?
 
-# Idea Extension
+Because my desktop runs triple monitors and I got so dang tired of having to change between `alt-tab` and `alt-tilde` to target the correct Chrome window. 
 
-- Can also use this to allow relative focus switching, i.e. to focus to the window to the left or right.
-- I'm thinking `ctrl+super+alt+h/l` would work as the shortcut.
+Not to mention how `alt-tab` handles switching to the last focused window and sometimes focuses onto the wrong window on the wrong monitor.
 
-# Other References
+As such, I decided that it'd be easier to just write a script to be able to **switch focus** to either the **closest left or right window**, or to focus onto the window of a **particular monitor**.
 
-- https://superuser.com/questions/142945/bash-command-to-focus-a-specific-window
-- https://askubuntu.com/questions/408372/which-are-the-windows-that-are-in-the-current-workspace
-- https://askubuntu.com/questions/31240/how-to-shift-applications-from-workspace-1-to-2-using-command
+The result is `easywindowswitcher`!
+
+## Dependencies
+
+- Python 3
+- `wmctrl` (install using e.g. `sudo apt-get install wmctrl`)
+- `xdotool` (install using e.g. `sudo apt-get install xdotool`)
+
+## Installation
+
+Currently `easywindowswitcher` is only available to be installed from source. It will (maybe) be eventually published as a `pip` package.
+
+Thankfully, installing from source isn't too hard!
+
+### From Source
+
+```
+git clone git@github.com:DevinSit/easy-window-switcher.git
+cd easy-window-switcher
+make install
+```
+
+## Usage
+
+`easywindowswitcher` is currently pretty small and, as such, supports just two modes of easy window switching: relative direction and absolute monitor position.
+
+### Relative Direction
+
+Switch focus to the closest left or right window:
+
+```
+easywindowswitcher direction left
+easywindowswitcher direction right
+```
+
+### Absolute Monitor Position
+
+Switch focus to the window on the given monitor (indexed from left-to-right, starting at 0):
+
+```
+# Monitor 0 would be the left-most monitor
+easywindowswitcher monitor 0
+
+# Monitor 1 would be the monitor to the right of the left-most monitor (i.e. monitor 0)
+easywindowswitcher monitor 1
+```
+
+### Keyboard Shortcuts
+
+Obviously calling `easywindowswitcher` commands directly from a command line isn't exactly the most optimal way to use it. Binding some preset commands to some keyboard shortcuts is much more effective!
+
+Since I'm a `vim` aficionado, might I suggest `ctrl+super+alt+[h/l]` for `easywindowswitcher direction [left/right]`?
+
+And for the absolute monitor positions, I quite like `ctrl+alt+[1/2/3]` for `easywindowswitcher monitor [0/1/2]`.
+
+But you do you!
+
+### :warning: Caveat
+
+`easywindowswitcher` is currently configured to only work with my personal monitor configuration, which is three 1080p monitors all laid out in landscape.
+
+If your setup just happens to be the same, then you're in luck! Otherwise, you'll have to wait until I implement configurable monitor/workspace setups. Shouldn't take too long :wink:
+
+## Roadmap
+
+While GitHub issues are used for public-facing requests, bug reports, etc, a separate **Trello board** is what I personally use to organize what is currently being worked on and what is coming in the future.
+
+It can be found [here](https://trello.com/b/P3DgZTJv/easy-window-switcher).
+
+## Contributing
+
+I don't really expect anyone else to actually contribute to this (tiny) project. On the off chance that you _do_, feel free to open an issue or a pull request. I'll gladly take a look and see if I can help you out!
+
+## Authors
+
+- **Devin Sit**
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
