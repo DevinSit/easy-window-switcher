@@ -4,6 +4,15 @@ from easywindowswitcher.utils.service_helpers import get_command_output, call_co
 
 
 class WMCtrl:
+    """
+    'wmctrl' (i.e. window manager control? window management controller?) is a
+    command line utility for reading information about the current state of a
+    desktop environment's workspaces and windows.
+
+    This class wraps the command line calls to this utility and exposes the
+    information in a more useful format.
+    """
+
     def __init__(self):
         pass
 

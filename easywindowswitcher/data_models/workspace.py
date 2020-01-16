@@ -1,4 +1,9 @@
 class Workspace:
+    """
+    Models the attributes (specifically, dimensions) of a single Workspace.
+    Many Workspaces form a WorkspaceGrid.
+    """
+
     def __init__(self, raw_dimensions: str = "", width: int = 0, height: int = 0) -> None:
         if raw_dimensions:
             self._process_raw_dimensions(raw_dimensions)

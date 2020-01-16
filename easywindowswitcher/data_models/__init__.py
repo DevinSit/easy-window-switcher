@@ -1,5 +1,5 @@
-from .window import Window
-from .workspace import Workspace
-from .workspace_grid import WorkspaceGrid
+from .window import Window  # noqa
+from .workspace import Workspace  # noqa
+from .workspace_grid import WorkspaceGrid  # noqa
 
-__all__ = [Window, Workspace, WorkspaceGrid]
+__all__ = ["Window", "Workspace", "WorkspaceGrid"]
