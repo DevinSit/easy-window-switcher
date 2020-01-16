@@ -13,6 +13,7 @@ class WindowFocuser:
     def __init__(self):
         self.wmctrl = wmctrl.WMCtrl()
 
+    def setup(self):
         self.workspace_grid, self.current_workspace = self.wmctrl.get_workspace_config()
         self.windows = self.wmctrl.get_windows_config()
 
