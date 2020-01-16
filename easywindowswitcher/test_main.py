@@ -6,7 +6,7 @@ from easywindowswitcher import main
 class TestCli(CustomTestCase):
     def setUp(self):
         self.runner = CliRunner()
-        self.cli = main.construct_cli([], "")
+        self.cli = main.cli
 
     def test_short_help_option_enabled(self):
         result = self.runner.invoke(self.cli, ["-h"])
