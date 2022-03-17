@@ -36,7 +36,10 @@ class WMCtrl:
         first_splits = system_config.split("DG:")[1].split("VP:")
 
         workspace_grid = WorkspaceGrid(raw_dimensions=first_splits[0].strip())
-        current_workspace = Workspace(raw_dimensions=first_splits[1].split("WA:")[0].strip())
+
+        current_workspace = Workspace(
+            raw_dimensions=first_splits[1].split("WA:")[0].strip()
+        )
 
         return (workspace_grid, current_workspace)
 
@@ -48,11 +51,17 @@ class WMCtrl:
             window = Window(raw_config=window_config)
 
             # Any 'window' that doesn't have a window_class isn't a window (e.g. unity-launcher).
+            # Windows with the nemo-desktop class are just the... well, desktop. And we don't want
+            # to focus the desktop.
             # Any window where the y-offset is actually 0 means that it doesn't have
             # any window decoration and is therefore not a window (e.g. Nautilus).
             # Additionally, I don't think I've seen a negative y-offset value for a legit window,
             # so we can shortcut that logic.
-            if window.window_class != "N/A" and window.y_offset > 0:
+            if (
+                window.window_class != "N/A"
+                and window.window_class != "nemo-desktop.Nemo-desktop"
+                and window.y_offset > 0
+            ):
                 windows.append(window)
 
         return windows
