@@ -57,7 +57,7 @@ class WindowFocuser:
             if window_to_focus:
                 self.wmctrl.focus_window_by_id(window_to_focus)
             else:
-                print("No window to focus to.")
+                logger.info("No window to focus to.")
         else:
             logger.info(
                 "Invalid direction: {}. Valid directions are: [{}]".format(
@@ -133,6 +133,10 @@ class WindowFocuser:
             return 3
 
     def _get_closest_window(self, direction: str) -> Optional[int]:
+        if len(self.current_workspace_windows) == 0:
+            logger.info("No windows in current workspace.")
+            return None
+
         current_monitor_windows = self.current_windows_by_monitor_index[
             self.current_monitor
         ]
@@ -151,7 +155,7 @@ class WindowFocuser:
                 # i.e. (0 - 1) % 3 = 2
                 left_monitor = self._next_monitor(self.current_monitor, -1)
 
-                while left_monitor != self.current_monitor and not (
+                while not (
                     closest_window := self._get_window_from_monitor(left_monitor, -1)
                 ):
                     left_monitor = self._next_monitor(left_monitor, -1)
@@ -164,7 +168,7 @@ class WindowFocuser:
             ):
                 right_monitor = self._next_monitor(self.current_monitor, 1)
 
-                while right_monitor != self.current_monitor and not (
+                while not (
                     closest_window := self._get_window_from_monitor(right_monitor, 0)
                 ):
                     right_monitor = self._next_monitor(right_monitor, 1)
