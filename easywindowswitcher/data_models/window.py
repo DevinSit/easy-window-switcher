@@ -1,3 +1,7 @@
+# The height of the window decoration that is constant in Ubuntu.
+WINDOW_DECORATION = 24
+
+
 class Window:
     """
     Models the attributes of a single window (on a monitor, in a workspace, in the workspace grid).
@@ -14,7 +18,7 @@ class Window:
         height: int = 0,
         width: int = 0,
         window_class: str = "",
-        title: str = ""
+        title: str = "",
     ) -> None:
         """
         :param id: A string decimal representation of the window's ID (normally in hex).
@@ -39,15 +43,23 @@ class Window:
         if raw_config:
             self._process_raw_config(raw_config)
         else:
+            self.id = id
             self.x_offset = x_offset
             self.y_offset = y_offset
+            self.height = height
             self.width = width
             self.window_class = window_class
             self.title = title
 
     def __repr__(self):
         return "ID: {}\nX Offset: {}\nY Offset: {}\nDimensions: {}x{}\nClass: {}\nTitle: {}".format(
-            self.id, self.x_offset, self.y_offset, self.width, self.height, self.window_class, self.title
+            self.id,
+            self.x_offset,
+            self.y_offset,
+            self.width,
+            self.height,
+            self.window_class,
+            self.title,
         )
 
     def _process_raw_config(self, raw_config: str) -> None:

@@ -35,8 +35,10 @@ class WMCtrl:
         # Example system_config: "0  * DG: 17280x3240  VP: 5760,0  WA: 0,24 5760x1056  N/A"
         first_splits = system_config.split("DG:")[1].split("VP:")
 
+        # Using example system_config: converts the "17280x3240" portion into a workspace grid.
         workspace_grid = WorkspaceGrid(raw_dimensions=first_splits[0].strip())
 
+        # Using example system_config:  Converts the "5760,0" into the current workspace.
         current_workspace = Workspace(
             raw_dimensions=first_splits[1].split("WA:")[0].strip()
         )

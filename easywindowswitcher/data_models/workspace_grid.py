@@ -1,11 +1,28 @@
 from typing import List
 from .workspace import Workspace
 
-# These are assumptions about how the user's monitor environment is setup.
-MONITOR_HORIZONTAL_COUNT = 3
-MONITOR_VERTICAL_COUNT = 1
-MONITOR_HEIGHT = 1080
-MONITOR_WIDTH = 1920
+# These are assumptions about how the user's workspaces are setup (based on their monitors).
+#
+# For example, three horizontally-aligned 1920x1080 monitors would have a single workspace dimension of:
+#
+# WORKSPACE_HEIGHT = 1 x 1080
+# WORKSPACE_WIDTH = 3 x 1920
+#
+# For the values below, they are calculated using a quad-monitor setup that looks like this:
+#
+# [1920x1080]
+#               [3440x1440]     [1440x2560]
+# [1920x1080]
+#
+# That is, two vertically stacked 1080p monitors on the left, with a 3440x1440 ultrawide in the middle,
+# and a portrait 2560x1440 monitor on the right.
+#
+# With this setup, these values are calculated as follows:
+#
+# WORKSPACE_HEIGHT = 2560 (aka the max height of all the monitors)
+# WORKSPACE_WIDTH = 1920 + 3440 + 1440
+WORKSPACE_HEIGHT = 2560
+WORKSPACE_WIDTH = 6800
 
 WORKSPACE_HORIZONTAL_COUNT = 3
 WORKSPACE_VERTICAL_COUNT = 3
@@ -22,12 +39,10 @@ class WorkspaceGrid:
         raw_dimensions: str = "",
         height: int = 0,
         width: int = 0,
-        monitor_horizontal_count: int = MONITOR_HORIZONTAL_COUNT,
-        monitor_vertical_count: int = MONITOR_VERTICAL_COUNT,
-        monitor_height: int = MONITOR_HEIGHT,
-        monitor_width: int = MONITOR_WIDTH,
+        workspace_height: int = WORKSPACE_HEIGHT,
+        workspace_width: int = WORKSPACE_WIDTH,
         workspace_horizontal_count: int = WORKSPACE_HORIZONTAL_COUNT,
-        workspace_vertical_count: int = WORKSPACE_VERTICAL_COUNT
+        workspace_vertical_count: int = WORKSPACE_VERTICAL_COUNT,
     ) -> None:
         if raw_dimensions:
             self._process_raw_dimensions(raw_dimensions)
@@ -35,10 +50,8 @@ class WorkspaceGrid:
             self.height = height
             self.width = width
 
-        self.monitor_horizontal_count = monitor_horizontal_count
-        self.monitor_vertical_count = monitor_vertical_count
-        self.monitor_height = monitor_height
-        self.monitor_width = monitor_width
+        self.workspace_height = workspace_height
+        self.workspace_width = workspace_width
 
         self.workspace_horizontal_count = workspace_horizontal_count
         self.workspace_vertical_count = workspace_vertical_count
@@ -54,7 +67,7 @@ class WorkspaceGrid:
         Workspaces, for our purposes, are indexed in order from left to right, top to bottom.
         i.e. in a 3x3 grid, the top-leftmost workspace is 0, then the top-center workspace is 1, etc
 
-        Example:
+        Example using a 3x3 grid with three horizontally-aligned 1920x1080 monitors:
 
         X         Y       Index
         0,        0       0
@@ -68,8 +81,8 @@ class WorkspaceGrid:
         11520     2160    8
         """
 
-        horizontal_index = int(workspace.width / self.monitor_width / self.monitor_horizontal_count)
-        vertical_index = int(workspace.height / self.monitor_height / self.monitor_vertical_count)
+        horizontal_index = int(workspace.width / self.workspace_width)
+        vertical_index = int(workspace.height / self.workspace_height)
 
         return self.workspace_indices[vertical_index][horizontal_index]
 
@@ -82,7 +95,9 @@ class WorkspaceGrid:
         self.height = int(split_dimensions[1])
         self.width = int(split_dimensions[0])
 
-    def _generate_workspace_indices(self, horizontal_count: int, vertical_count: int) -> List[List[int]]:
+    def _generate_workspace_indices(
+        self, horizontal_count: int, vertical_count: int
+    ) -> List[List[int]]:
         """
         Builds a 2D list to represent the grid of workspaces, where each cell is the index.
 

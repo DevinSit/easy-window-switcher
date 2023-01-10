@@ -1,6 +1,6 @@
 # Welcome to Easy Window Switcher!
 
-`easywindowswitcher` is a small (Python) script for enabling X window users to more easily change focus between their windows that are spread across multiple monitors.
+`easywindowswitcher` is a small (Python) script for enabling X window users to more easily change focus between windows that are spread across multiple monitors.
 
 **Upgrade your alt-tab!**
 
@@ -8,7 +8,7 @@ Note: `easywindowswitcher` has only been tested in Ubuntu 16.04 under Unity. You
 
 ## Why did I build Easy Window Switcher?
 
-Because my desktop runs triple monitors and I got so dang tired of having to change between `alt-tab` and `alt-tilde` to target the correct Chrome window. 
+Because my desktop runs quad monitors and I got so dang tired of having to change between `alt-tab` and `alt-tilde` to target the correct Chrome window.
 
 Not to mention how `alt-tab` handles switching to the last focused window and sometimes focuses onto the wrong window on the wrong monitor.
 
@@ -71,11 +71,17 @@ And for the absolute monitor positions, I quite like `ctrl+alt+[1/2/3]` for `eas
 
 But you do you!
 
-### :warning: Caveat
+### :warning: Caveat - Monitor Configuration
 
-`easywindowswitcher` is currently configured to only work with my personal monitor configuration, which is three 1080p monitors all laid out in landscape.
+`easywindowswitcher` is currently configured to only work with my personal monitor configuration, which is two 1080p monitors stack vertically, followed by a 3440x1440 ultrawide in the center, and a 2560x1440 monitor on right that's in portrait.
 
-If your setup just happens to be the same, then you're in luck! Otherwise, you'll have to wait until I implement configurable monitor/workspace setups. Shouldn't take too long :wink:
+If your setup just happens to be the same, then you're in luck! Otherwise, see below for how to customize the code to work with your setup.
+
+#### Customization
+
+1. Go into `easywindowswitcher/data_models/workspace_grid.py` and adjust the `WORKSPACE_HEIGHT` and `WORKSPACE_WIDTH` constants according to the comment in the file explaining how they work.
+2. Go into `easywindowswitcher/services/window_focuser.py` and adjust the `NUMBER_OF_MONITORS` constant.
+3. Still in `window_focuser.py`, adjust the logic of `_calculate_which_monitor_window_is_on` so that it correctly indexes your monitor setup from left-to-right, top-to-bottom (or whatever you want).
 
 ## Roadmap
 
