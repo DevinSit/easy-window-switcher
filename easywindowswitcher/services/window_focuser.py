@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 from easywindowswitcher.data_models import Window
 from easywindowswitcher.data_models.window import WINDOW_DECORATION
 from easywindowswitcher.external_services import wmctrl
@@ -29,14 +29,17 @@ class WindowFocuser:
         self.windows = self.wmctrl.get_windows_config()
 
         self.current_workspace_windows = self._get_current_workspace_windows()
+
         self.current_windows_by_monitor_index = self._index_windows_by_monitor(
             self.current_workspace_windows
         )
+
         self.current_monitors_by_window_index = self._index_monitors_by_window(
             self.current_workspace_windows
         )
 
         self.current_focused_window_id = self.wmctrl.get_current_focused_window_id()
+
         self.current_monitor = self.current_monitors_by_window_index[
             self.current_focused_window_id
         ]
@@ -50,7 +53,11 @@ class WindowFocuser:
     def focus_by_direction(self, direction: str) -> None:
         if direction in DIRECTIONS:
             window_to_focus = self._get_closest_window(direction)
-            self.wmctrl.focus_window_by_id(window_to_focus)
+
+            if window_to_focus:
+                self.wmctrl.focus_window_by_id(window_to_focus)
+            else:
+                print("No window to focus to.")
         else:
             logger.info(
                 "Invalid direction: {}. Valid directions are: [{}]".format(
@@ -142,8 +149,12 @@ class WindowFocuser:
             ):
                 # The modulus operation wraps the monitor index back around if it goes negative.
                 # i.e. (0 - 1) % 3 = 2
-                left_monitor = (self.current_monitor - 1) % NUMBER_OF_MONITORS
-                closest_window = self.current_windows_by_monitor_index[left_monitor][-1]
+                left_monitor = self._next_monitor(self.current_monitor, -1)
+
+                while left_monitor != self.current_monitor and not (
+                    closest_window := self._get_window_from_monitor(left_monitor, -1)
+                ):
+                    left_monitor = self._next_monitor(left_monitor, -1)
             else:
                 # Find the window on the current monitor that is just left of the current window
                 closest_window = current_monitor_windows[current_window_position - 1]
@@ -151,8 +162,12 @@ class WindowFocuser:
             if self._is_rightmost_window_on_current_monitor(
                 current_monitor_windows, current_window_position
             ):
-                right_monitor = (self.current_monitor + 1) % NUMBER_OF_MONITORS
-                closest_window = self.current_windows_by_monitor_index[right_monitor][0]
+                right_monitor = self._next_monitor(self.current_monitor, 1)
+
+                while right_monitor != self.current_monitor and not (
+                    closest_window := self._get_window_from_monitor(right_monitor, 0)
+                ):
+                    right_monitor = self._next_monitor(right_monitor, 1)
             else:
                 # Find the window on the current monitor that is just right of the current window
                 closest_window = current_monitor_windows[current_window_position + 1]
@@ -170,3 +185,17 @@ class WindowFocuser:
         return len(current_monitor_windows) == 1 or current_window_position == (
             len(current_monitor_windows) - 1
         )
+
+    def _get_window_from_monitor(self, monitor: int, index: int) -> Union[int, None]:
+        try:
+            return self.current_windows_by_monitor_index[monitor][index]
+        except KeyError:
+            return None
+
+    def _next_monitor(self, current_monitor: int, direction: int = 1) -> int:
+        """
+        Calculates the index of the next monitor in the sequence for the given direction,
+        where direction is either 1 (for the next right monitor) or -1 (for the next left monitor).
+        """
+
+        return (current_monitor + direction) % NUMBER_OF_MONITORS
